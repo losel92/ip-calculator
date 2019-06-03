@@ -1,0 +1,6 @@
+c:\users\sher0446\documents\visual studio 2017\Projects\FinalProjectGF2\FinalProjectGF2\obj\Debug\FinalProjectGF2.csprojResolveAssemblyReference.cache
+c:\users\sher0446\documents\visual studio 2017\Projects\FinalProjectGF2\FinalProjectGF2\bin\Debug\FinalProjectGF2.exe.config
+c:\users\sher0446\documents\visual studio 2017\Projects\FinalProjectGF2\FinalProjectGF2\bin\Debug\FinalProjectGF2.exe
+c:\users\sher0446\documents\visual studio 2017\Projects\FinalProjectGF2\FinalProjectGF2\bin\Debug\FinalProjectGF2.pdb
+c:\users\sher0446\documents\visual studio 2017\Projects\FinalProjectGF2\FinalProjectGF2\obj\Debug\FinalProjectGF2.exe
+c:\users\sher0446\documents\visual studio 2017\Projects\FinalProjectGF2\FinalProjectGF2\obj\Debug\FinalProjectGF2.pdb
