@@ -62,6 +62,7 @@ namespace FinalProjectGF2
 
                             //Gets each individual Ip field
                             string[] ipExploded = ipAddr.Split('.');
+                            int[] ipExplodedInt = new int[3];
 
                             //This means the user hasn't punctuated the Ip address correctly
                             if (ipExploded.Length - 1 > 3 || ipExploded.Length - 1 < 3)
@@ -70,9 +71,20 @@ namespace FinalProjectGF2
                             }
                             else
                             {
+                                //If each ip section is not a number, it will return an error
+                                //It will also test for a number that is in the range 0-255
                                 foreach (string ip in ipExploded)
                                 {
-
+                                    var j = 0;
+                                    if (!int.TryParse(ip, out int i) || i > 255 || i < 0)
+                                    {
+                                        Start();
+                                    }
+                                    else
+                                    {
+                                        ipExplodedInt[j] = i;
+                                        j++;
+                                    }
                                 }
                                 
                             }
