@@ -14,7 +14,7 @@ namespace FinalProjectGF2
             int[] intSec = new int[4];
             string[] inputExploded;
             string ipAddr = "";
-            string subMask = "";
+            string subMaskStr = "";
 
             //Introduction
             Console.WriteLine("Welcome to the Ip Calculator 2000");
@@ -34,9 +34,12 @@ namespace FinalProjectGF2
                 Console.Clear();
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
                 Console.WriteLine(ipAddr);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
+                Console.WriteLine(subMaskStr);
 
 
                 Console.ReadKey();
+                Start();
 
 
                 void MakeCalculations()
@@ -62,31 +65,89 @@ namespace FinalProjectGF2
 
                             //Gets each individual Ip field
                             string[] ipExploded = ipAddr.Split('.');
-                            int[] ipExplodedInt = new int[3];
+                            int[] ipExplodedInt = new int[4];
 
-                            //This means the user hasn't punctuated the Ip address correctly
-                            if (ipExploded.Length - 1 > 3 || ipExploded.Length - 1 < 3)
+                            string[] subnetExploded = new string[4];
+                            int[] subnetInt = new int[4];
+
+                            //This means the user is entering a prefix for the subnet
+                            if (subMaskRaw.Length < 3 && subMaskRaw.Length > 0 && Convert.ToInt32(subMaskRaw) > 1 && Convert.ToInt32(subMaskRaw) < 31)
                             {
-                                Start();
-                            }
-                            else
-                            {
-                                //If each ip section is not a number, it will return an error
-                                //It will also test for a number that is in the range 0-255
-                                foreach (string ip in ipExploded)
+                                //Breaks the subnet mask into three sections
+                                //Also creates a user-friendly string with points separating each section of the subnet mask
+                                for (int i = Convert.ToInt32(subMaskRaw), j = 0; j < 4; j++)
                                 {
-                                    var j = 0;
-                                    if (!int.TryParse(ip, out int i) || i > 255 || i < 0)
+                                    int subSecBits = 0;
+
+                                    //Defines how many bits there are in a given section
+                                    if (i > 8)
                                     {
-                                        Start();
+                                        subSecBits = 8;
+                                        i -= 8;
                                     }
                                     else
                                     {
-                                        ipExplodedInt[j] = i;
-                                        j++;
+                                        subSecBits = i;
+                                        i = 0;
+                                    }
+
+                                    //Translates from number of bits to decimal and assigns it to the section
+                                    int subSecInt = Convert.ToInt32(256 - Math.Pow(2, 8 - subSecBits));
+                                    subnetInt[j] = subSecInt;
+
+                                    //formats the SubMask in a nice way with points for showing the user
+                                    subMaskStr += Convert.ToString(subSecInt) + '.';
+                                }
+                                subMaskStr = subMaskStr.TrimEnd('.');
+                            }
+                            //this means the subnet is a dotted decimal
+                            else if (subMaskRaw.Length > 2 && subMaskRaw.Length <= 15)
+                            {
+                                //Assigns the subnet array to each individual
+                                //value of the exploded string and convert them to integers
+                                subnetExploded = subMaskRaw.Split('.');
+                                subnetInt = testForErrors(subnetExploded);
+
+                                //The one that's gonna be shown to the user
+                                subMaskStr = subMaskRaw;
+                            }
+                            else
+                            {
+                                Start();
+                            }
+
+                            ipExplodedInt = testForErrors(ipExploded);
+
+                            //Tests an Ip addr / sub mask for inconsistencies and returns an array with the values of each section
+                            int[] testForErrors(string[] inputArr)
+                            {
+                                int[] inputExplodedInt = new int[4];
+
+                                //This means the user hasn't punctuated the Ip address correctly
+                                if (inputArr.Length > 4 || inputArr.Length < 4)
+                                {
+                                    Start();
+                                }
+                                else
+                                {
+                                    //If any ip section is not an integer, it will return an error
+                                    //It will also test for a number that is in the range 0-255
+                                    foreach (string ip in inputArr)
+                                    {
+                                        var j = 0;
+                                        if (!int.TryParse(ip, out int i) || i > 255 || i < 0)
+                                        {
+                                            Start();
+                                        }
+                                        else
+                                        {
+                                            inputExplodedInt[j] = i;
+                                            j++;
+                                        }
                                     }
                                 }
-                                
+
+                                return inputExplodedInt;
                             }
                         }
                     }
