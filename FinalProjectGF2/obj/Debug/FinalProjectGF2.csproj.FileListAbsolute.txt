@@ -4,3 +4,10 @@ c:\users\sher0446\documents\visual studio 2017\Projects\FinalProjectGF2\FinalPro
 c:\users\sher0446\documents\visual studio 2017\Projects\FinalProjectGF2\FinalProjectGF2\bin\Debug\FinalProjectGF2.pdb
 c:\users\sher0446\documents\visual studio 2017\Projects\FinalProjectGF2\FinalProjectGF2\obj\Debug\FinalProjectGF2.exe
 c:\users\sher0446\documents\visual studio 2017\Projects\FinalProjectGF2\FinalProjectGF2\obj\Debug\FinalProjectGF2.pdb
+C:\Users\losel\Desktop\ip-calculator\FinalProjectGF2\bin\Debug\FinalProjectGF2.exe.config
+C:\Users\losel\Desktop\ip-calculator\FinalProjectGF2\bin\Debug\FinalProjectGF2.exe
+C:\Users\losel\Desktop\ip-calculator\FinalProjectGF2\bin\Debug\FinalProjectGF2.pdb
+C:\Users\losel\Desktop\ip-calculator\FinalProjectGF2\obj\Debug\FinalProjectGF2.csprojAssemblyReference.cache
+C:\Users\losel\Desktop\ip-calculator\FinalProjectGF2\obj\Debug\FinalProjectGF2.csproj.CoreCompileInputs.cache
+C:\Users\losel\Desktop\ip-calculator\FinalProjectGF2\obj\Debug\FinalProjectGF2.exe
+C:\Users\losel\Desktop\ip-calculator\FinalProjectGF2\obj\Debug\FinalProjectGF2.pdb

@@ -30,6 +30,7 @@ namespace FinalProjectGF2
 
             void Start() {
                 Console.Clear();
+                ResetVariables();
 
                 Console.Write("Insert IP Address: ");
                 //Gets the Ip address to be manipulated
@@ -90,7 +91,6 @@ namespace FinalProjectGF2
                                 for (int i = Convert.ToInt32(subMaskRaw), j = 0; j < 4; j++)
                                 {
                                     int subSecBits = 0;
-
                                     //Defines how many bits there are in a given section
                                     if (i > 8)
                                     {
@@ -107,13 +107,18 @@ namespace FinalProjectGF2
                                     int subSecInt = Convert.ToInt32(256 - Math.Pow(2, 8 - subSecBits));
                                     subnetInt[j] = subSecInt;
 
+
                                     //Prefix to binary
-                                    for(int k = subSecBits; k > 0; k--)
+                                    for(int k = 0; k < subSecBits; k++)
                                     {
                                         subnetBin[j] += '1';
-                                        subnetBin[j].PadRight(8, '0');
-
                                     }
+                                    if (subSecBits == 0)
+                                    {
+                                        subnetBin[j] = "00000000";
+                                        break;
+                                    }
+                                    subnetBin[j] = subnetBin[j].PadRight(8, '0');
 
                                     //formats the SubMask in a nice way with points for showing the user
                                     subMaskStr += Convert.ToString(subSecInt) + '.';
@@ -152,7 +157,6 @@ namespace FinalProjectGF2
                             //Gets an array of the ip sections in decimal and one in binary
                             ipExplodedInt = testForErrors(ipExploded);
                             ipBin = intArrToBinArr(ipExplodedInt);
-                            Console.WriteLine(ipExplodedInt[1]);
                             Console.ReadKey();
 
                             //Beautifies the binary ip address that's going to be shown to the user
@@ -198,10 +202,12 @@ namespace FinalProjectGF2
                             string[] intArrToBinArr(int[] inputArr)
                             {
                                 string[] outputBin = new string[4];
+                                int i = 0;
                                 foreach (int ipSec in inputArr)
                                 {
-                                    int i = 0;
-                                    outputBin[i] = DecToBinary(inputArr[0]);
+                                    outputBin[i] = DecToBinary(inputArr[i]);
+                                    outputBin[i] = outputBin[i].PadLeft(8, '0');
+                                    i++;
                                 }
                                 return outputBin;
                             }
@@ -249,6 +255,14 @@ namespace FinalProjectGF2
             string DecToDotted()
             {
                 return "";
+            }
+
+            void ResetVariables()
+            {
+                ipAddr = "";
+                ipAddrBin = "";
+                subMaskStr = "";
+                subMaskBin = "";
             }
         }
     }
