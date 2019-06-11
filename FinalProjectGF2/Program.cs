@@ -17,6 +17,7 @@ namespace FinalProjectGF2
             string ipAddrBin = "";
             string subMaskStr = "";
             string subMaskBin = "";
+            char ipClass;
 
             //Introduction
             Console.WriteLine("Welcome to the Ip Calculator 2000");
@@ -40,13 +41,15 @@ namespace FinalProjectGF2
 
                 Console.Clear();
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
-                Console.WriteLine(ipAddr);
+                Console.WriteLine("Ip Address (Decimal): " + ipAddr);
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
-                Console.WriteLine(subMaskStr);
+                Console.WriteLine("Subnet Mask (Decimal):" + subMaskStr);
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
-                Console.WriteLine(ipAddrBin);
+                Console.WriteLine("Ip Address (Binary): " + ipAddrBin);
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
-                Console.WriteLine(subMaskBin);
+                Console.WriteLine("Subnet Mask (Binary)" + subMaskBin);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
+                Console.WriteLine("Class: " + ipClass);
 
 
                 Console.ReadKey();
@@ -105,19 +108,28 @@ namespace FinalProjectGF2
 
                                     //Translates from prefix to decimal and assigns it to the section
                                     int subSecInt = Convert.ToInt32(256 - Math.Pow(2, 8 - subSecBits));
-                                    subnetInt[j] = subSecInt;
+                                    
 
 
-                                    //Prefix to binary
-                                    for(int k = 0; k < subSecBits; k++)
-                                    {
-                                        subnetBin[j] += '1';
-                                    }
+                                    //Prefix to binary and int
                                     if (subSecBits == 0)
                                     {
+                                        //If there are 0 bits then both the binary and the integer value should also be 0
                                         subnetBin[j] = "00000000";
-                                        break;
+                                        subnetInt[j] = 0;
                                     }
+                                    //If there are more than 0 bits in a given section
+                                    else
+                                    {
+                                        //binary
+                                        for (int k = 0; k < subSecBits; k++)
+                                        {
+                                            subnetBin[j] += '1';
+                                        }
+                                        //int
+                                        subnetInt[j] = subSecInt;
+                                    }
+                                    //Adds zeros to the end of the section, so every section consistently has 8 bits
                                     subnetBin[j] = subnetBin[j].PadRight(8, '0');
 
                                     //formats the SubMask in a nice way with points for showing the user
@@ -165,6 +177,14 @@ namespace FinalProjectGF2
                                 ipAddrBin += ipSec + '.';
                             }
                             ipAddrBin = ipAddrBin.TrimEnd('.');
+
+                            //Gets the class of the ip address
+                            if (ipExplodedInt[0] >= 1 && ipExplodedInt[0] <= 127) { ipClass = 'A'; }
+                            else if (ipExplodedInt[0] >= 128 && ipExplodedInt[0] <= 191) { ipClass = 'B'; }
+                            else if (ipExplodedInt[0] >= 192 && ipExplodedInt[0] <= 223) { ipClass = 'C'; }
+                            else if (ipExplodedInt[0] >= 224 && ipExplodedInt[0] <= 239) { ipClass = 'D'; }
+                            else if (ipExplodedInt[0] >= 240 && ipExplodedInt[0] <= 255) { ipClass = 'E'; }
+                            else { Start(); }
 
                             //Tests an Ip addr / sub mask for inconsistencies and returns an array with the values of each section
                             int[] testForErrors(string[] inputArr)
