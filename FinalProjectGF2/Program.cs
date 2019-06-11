@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace FinalProjectGF2
 {
+
     class Program
     {
         static void Main(string[] args)
         {
+            //Sets the color of the console
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.BackgroundColor = ConsoleColor.Black;
+
             // 255.255.255.255 --> 11111111.11111111.11111111.11111111
             int[] intSec = new int[4];
             string[] inputExploded;
@@ -18,8 +23,10 @@ namespace FinalProjectGF2
             string subMaskStr = "";
             string subMaskBin = "";
             char ipClass;
+            bool subnetExists = true;
 
             //Introduction
+            Console.Clear();
             Console.WriteLine("Welcome to the Ip Calculator 2000");
             Console.WriteLine("With this tool you can insert any ip address and get back the network address and the number of usable hosts");
             Console.WriteLine("Please enter the Ip address either as dotted decimal or prefix");
@@ -40,15 +47,15 @@ namespace FinalProjectGF2
                 MakeCalculations();
 
                 Console.Clear();
-                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 Console.WriteLine("Ip Address (Decimal): " + ipAddr);
-                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
-                Console.WriteLine("Subnet Mask (Decimal):" + subMaskStr);
-                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 Console.WriteLine("Ip Address (Binary): " + ipAddrBin);
-                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
-                Console.WriteLine("Subnet Mask (Binary)" + subMaskBin);
-                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 3);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                Console.WriteLine("Subnet Mask (Decimal): " + subMaskStr);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                Console.WriteLine("Subnet Mask (Binary): " + subMaskBin);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 Console.WriteLine("Class: " + ipClass);
 
 
@@ -89,6 +96,8 @@ namespace FinalProjectGF2
                             //This means the user is entering a prefix for the subnet
                             if (subMaskRaw.Length < 3 && subMaskRaw.Length > 0 && Convert.ToInt32(subMaskRaw) > 1 && Convert.ToInt32(subMaskRaw) < 31)
                             {
+                                subnetExists = true;
+
                                 //Breaks the subnet mask into three sections
                                 //Also creates a user-friendly string with points separating each section of the subnet mask
                                 for (int i = Convert.ToInt32(subMaskRaw), j = 0; j < 4; j++)
@@ -143,10 +152,12 @@ namespace FinalProjectGF2
                             //this means the subnet is a dotted decimal
                             else if (subMaskRaw.Length > 2 && subMaskRaw.Length <= 15)
                             {
+                                subnetExists = true;
+
                                 //Assigns the subnet array to each individual
                                 //value of the exploded string and convert them to integers
                                 subnetExploded = subMaskRaw.Split('.');
-                                subnetInt = testForErrors(subnetExploded);
+                                subnetInt = strArrToIntArr(subnetExploded);
 
                                 //Gets the binary value of the subnet mask
                                 subnetBin = intArrToBinArr(subnetInt);
@@ -161,15 +172,23 @@ namespace FinalProjectGF2
                                 //The one that's gonna be shown to the user
                                 subMaskStr = subMaskRaw;
                             }
+                            //This means that the user is entering an address of
+                            //class D or E, which do not have subnets by default
+                            else if (subMaskRaw.Length == 1 && Convert.ToInt32(subMaskRaw) == 0)
+                            {
+                                subnetExists = false;
+                                subMaskStr = "No Subnet for this Ip Class";
+                                subMaskBin = "No Subnet for this Ip Class";
+                            }
+                            //This means that the user entered no subnet
                             else
                             {
                                 Start();
                             }
 
                             //Gets an array of the ip sections in decimal and one in binary
-                            ipExplodedInt = testForErrors(ipExploded);
+                            ipExplodedInt = strArrToIntArr(ipExploded);
                             ipBin = intArrToBinArr(ipExplodedInt);
-                            Console.ReadKey();
 
                             //Beautifies the binary ip address that's going to be shown to the user
                             foreach (string ipSec in ipBin)
@@ -179,61 +198,99 @@ namespace FinalProjectGF2
                             ipAddrBin = ipAddrBin.TrimEnd('.');
 
                             //Gets the class of the ip address
-                            if (ipExplodedInt[0] >= 1 && ipExplodedInt[0] <= 127) { ipClass = 'A'; }
-                            else if (ipExplodedInt[0] >= 128 && ipExplodedInt[0] <= 191) { ipClass = 'B'; }
-                            else if (ipExplodedInt[0] >= 192 && ipExplodedInt[0] <= 223) { ipClass = 'C'; }
-                            else if (ipExplodedInt[0] >= 224 && ipExplodedInt[0] <= 239) { ipClass = 'D'; }
-                            else if (ipExplodedInt[0] >= 240 && ipExplodedInt[0] <= 255) { ipClass = 'E'; }
-                            else { Start(); }
-
-                            //Tests an Ip addr / sub mask for inconsistencies and returns an array with the values of each section
-                            int[] testForErrors(string[] inputArr)
+                            //Also, if the subnet mask isn't right for a given class, it will send back an error
+                            if (subnetExists)
                             {
-                                int[] inputExplodedInt = new int[4];
-
-                                //This means the user hasn't punctuated the Ip address correctly
-                                if (inputArr.Length > 4 || inputArr.Length < 4)
+                                if (ipExplodedInt[0] >= 1 && ipExplodedInt[0] <= 127)
                                 {
-                                    Start();
+                                    ipClass = 'A';
+                                    if (subnetInt[0] < 255) { Start(); }
+                                }
+                                else if (ipExplodedInt[0] >= 128 && ipExplodedInt[0] <= 191)
+                                {
+                                    ipClass = 'B';
+                                    if (subnetInt[0] < 255 || subnetInt[1] < 255) { Start(); }
+                                }
+                                else if (ipExplodedInt[0] >= 192 && ipExplodedInt[0] <= 223)
+                                {
+                                    ipClass = 'C';
+                                    if (subnetInt[0] < 255 || subnetInt[1] < 255 || subnetInt[2] < 255) { Start(); }
                                 }
                                 else
                                 {
-                                    //If any ip section is not an integer, it will return an error
-                                    //It will also test for a number that is in the range 0-255
-                                    int j = 0;
-                                    foreach (string sec in inputArr)
-                                    {
-                                        int i;
-                                        if (!int.TryParse(sec, out i) || i > 255 || i < 0)
-                                        {
-                                            Start();
-                                        }
-                                        else
-                                        {
-                                            inputExplodedInt[j] = i;
-                                        }
-                                        j++;
-                                    }
+                                    Start();
                                 }
-
-                                return inputExplodedInt;
                             }
-                            //Converts an array of integers into an array of binary strings
-                            string[] intArrToBinArr(int[] inputArr)
+                            //Ip classes D and E should not have a subnet
+                            else if (!subnetExists)
                             {
-                                string[] outputBin = new string[4];
-                                int i = 0;
-                                foreach (int ipSec in inputArr)
+                                if (ipExplodedInt[0] >= 224 && ipExplodedInt[0] <= 239)
                                 {
-                                    outputBin[i] = DecToBinary(inputArr[i]);
-                                    outputBin[i] = outputBin[i].PadLeft(8, '0');
-                                    i++;
+                                    ipClass = 'D';
                                 }
-                                return outputBin;
+                                else if (ipExplodedInt[0] >= 240 && ipExplodedInt[0] <= 255)
+                                {
+                                    ipClass = 'E';
+                                }
+                                else
+                                {
+                                    Start();
+                                }
+                            }
+                            else
+                            {
+                                Start();
                             }
                         }
                     }
                 }
+            }
+
+            //Tests an Ip addr / sub mask for inconsistencies and returns an array with the values of each section
+            int[] strArrToIntArr(string[] inputArr)
+            {
+                int[] inputExplodedInt = new int[4];
+
+                //This means the user hasn't punctuated the Ip address correctly
+                if (inputArr.Length > 4 || inputArr.Length < 4)
+                {
+                    Start();
+                }
+                else
+                {
+                    //If any ip section is not an integer, it will return an error
+                    //It will also test for a number that is in the range 0-255
+                    int j = 0;
+                    foreach (string sec in inputArr)
+                    {
+                        int i;
+                        if (!int.TryParse(sec, out i) || i > 255 || i < 0)
+                        {
+                            Start();
+                        }
+                        else
+                        {
+                            inputExplodedInt[j] = i;
+                        }
+                        j++;
+                    }
+                }
+
+                return inputExplodedInt;
+            }
+
+            //Converts an array of integers into an array of binary strings
+            string[] intArrToBinArr(int[] inputArr)
+            {
+                string[] outputBin = new string[4];
+                int i = 0;
+                foreach (int ipSec in inputArr)
+                {
+                    outputBin[i] = DecToBinary(inputArr[i]);
+                    outputBin[i] = outputBin[i].PadLeft(8, '0');
+                    i++;
+                }
+                return outputBin;
             }
 
             //Converts from dotted decimal to dotted binary
@@ -283,6 +340,7 @@ namespace FinalProjectGF2
                 ipAddrBin = "";
                 subMaskStr = "";
                 subMaskBin = "";
+                subnetExists = true;
             }
         }
     }
