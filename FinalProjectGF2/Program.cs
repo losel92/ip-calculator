@@ -29,9 +29,10 @@ namespace FinalProjectGF2
             Console.Clear();
             Console.WriteLine("Welcome to the Ip Calculator 2000");
             Console.WriteLine("With this tool you can insert any ip address and get back the network address and the number of usable hosts");
-            Console.WriteLine("Please enter the Ip address either as dotted decimal or prefix");
+            Console.WriteLine("Please enter the Ip address either as dotted decimal or prefix\n");
             Console.WriteLine("Use these two templates as a reference:");
-            Console.WriteLine("192.128.1.0/255.255.255.0  ||  192.128.1.0/24\n\n");
+            Console.WriteLine("192.128.1.0/255.255.255.0  ||  192.128.1.0/24\n");
+            Console.WriteLine("If the ip address is of class D or E, please write the subnet mask as /0\n\n");
             Console.Write("Press any key to continue...");
             Console.ReadKey();
             Start();
