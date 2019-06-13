@@ -22,6 +22,9 @@ namespace FinalProjectGF2
             string ipAddrBin = "";
             string subMaskStr = "";
             string subMaskBin = "";
+            string networkAddr = "";
+            string networkAddrBin = "";
+            int hosts = 0;
             char ipClass;
             bool subnetExists = true;
 
@@ -58,6 +61,10 @@ namespace FinalProjectGF2
                 Console.WriteLine("Subnet Mask (Binary): " + subMaskBin);
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 Console.WriteLine("Class: " + ipClass);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                Console.WriteLine("Network Address (Decimal): " + networkAddr);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                Console.WriteLine("Network Address (Binary): " + networkAddrBin);
 
 
                 Console.ReadKey();
@@ -242,6 +249,66 @@ namespace FinalProjectGF2
                             {
                                 Start();
                             }
+
+                            //Network address (binary)
+                            string[] binAddr = new string[4];
+                            int p = 0;
+                            foreach (string sec in ipBin)
+                            {
+                                int n = 0;
+                                foreach (char bit in sec)
+                                {
+                                    if (ipBin[p][n] == '1' && subnetBin[p][n] == '1')
+                                    {
+                                        binAddr[p] += ipBin[p][n];
+                                    }
+                                    else
+                                    {
+                                        binAddr[p] += '0';
+                                    }
+                                    n++;
+                                }
+                                p++;
+                            }
+                            //Output to the user
+                            foreach (string sec in binAddr)
+                            {
+                                networkAddrBin += sec;
+                                networkAddrBin += '.';
+                            }
+                            networkAddrBin = networkAddrBin.TrimEnd('.');
+
+                            //Network address (Dotted Decimal)
+                            networkAddr = BinArrToDottedDec(binAddr);
+
+                            //Hosts
+
+                            int indexToStart = 0;
+    
+                            //gets the starting section of the subnet after the default
+                            switch (ipClass)
+                            {
+                                case 'A':
+                                    indexToStart = 1;
+                                    break;
+
+                                case 'B':
+                                    indexToStart = 2;
+                                    break;
+
+                                case 'C':
+                                    indexToStart = 3;
+                                    break;
+
+                                default:
+                                    indexToStart = -1;
+                                    break;
+                            }
+
+                            /*for ()
+                            {
+
+                            }*/
                         }
                     }
                 }
@@ -330,9 +397,34 @@ namespace FinalProjectGF2
                 return binStr;
             }
 
-            string DecToDotted()
+            //Converts a binary string into a dotted decimal
+            string BinArrToDottedDec(string[] binVal)
             {
-                return "";
+                string output = "";
+                int[] dottedSecInt = new int[4];
+
+                //Converts each section to an integer
+                int k = 0;
+                foreach (string binSec in binVal)
+                {
+                    int bitValue = 128;
+                    int finalInt = 0;
+                    foreach (char bit in binSec)
+                    {
+                        if (bit == '1') { finalInt += bitValue; }
+                        bitValue /= 2;
+                    }
+                    dottedSecInt[k] = finalInt;
+                    k++;
+                }
+
+                //Joins all sections into one string and adds points to separate each section
+                for (int i = 0; i < 4; i++)
+                {
+                    output += Convert.ToString(dottedSecInt[i]) + '.';
+                }
+                output = output.TrimEnd('.');
+                return output;
             }
 
             void ResetVariables()
@@ -341,6 +433,8 @@ namespace FinalProjectGF2
                 ipAddrBin = "";
                 subMaskStr = "";
                 subMaskBin = "";
+                networkAddr = "";
+                networkAddrBin = "";
                 subnetExists = true;
             }
         }
