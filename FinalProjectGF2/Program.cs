@@ -65,6 +65,19 @@ namespace FinalProjectGF2
                 Console.WriteLine("Network Address (Decimal): " + networkAddr);
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 Console.WriteLine("Network Address (Binary): " + networkAddrBin);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                if (hosts > 0)
+                {
+                    Console.WriteLine("Hosts: " + hosts);
+                }
+                else if (hosts == -1)
+                {
+                    Console.WriteLine("Hosts: No hosts available for addresses of class " + ipClass);
+                }
+                else
+                {
+                    Console.WriteLine("Hosts: Error! Calculating hosts failed");
+                }
 
 
                 Console.ReadKey();
@@ -282,33 +295,25 @@ namespace FinalProjectGF2
                             networkAddr = BinArrToDottedDec(binAddr);
 
                             //Hosts
-
-                            int indexToStart = 0;
-    
-                            //gets the starting section of the subnet after the default
-                            switch (ipClass)
+                            if (ipClass == 'D' || ipClass == 'E')
                             {
-                                case 'A':
-                                    indexToStart = 1;
-                                    break;
-
-                                case 'B':
-                                    indexToStart = 2;
-                                    break;
-
-                                case 'C':
-                                    indexToStart = 3;
-                                    break;
-
-                                default:
-                                    indexToStart = -1;
-                                    break;
+                                hosts = -1;
                             }
-
-                            /*for ()
+                            else
                             {
+                                int hostBits = 0;
 
-                            }*/
+                                //Gets the amount of host bits in a subnet mask
+                                foreach (string sec in subnetBin)
+                                {
+                                    foreach (char bit in sec)
+                                    {
+                                        if (bit == '0') { hostBits++; }
+                                    }
+                                }
+                                //The actual equasion to getting the hosts --> h = 2^n
+                                hosts = Convert.ToInt32(Math.Pow(2, hostBits));
+                            }
                         }
                     }
                 }
