@@ -25,6 +25,7 @@ namespace FinalProjectGF2
             string networkAddr = "";
             string networkAddrBin = "";
             int hosts = 0;
+            int subnetsNo = 0;
             char ipClass;
             bool subnetExists = true;
 
@@ -51,6 +52,8 @@ namespace FinalProjectGF2
                 MakeCalculations();
 
                 Console.Clear();
+
+                //Shows the information to the user
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 Console.WriteLine("Ip Address (Decimal): " + ipAddr);
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
@@ -68,15 +71,23 @@ namespace FinalProjectGF2
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 if (hosts > 0)
                 {
-                    Console.WriteLine("Hosts: " + hosts);
+                    Console.WriteLine("No of Hosts: " + hosts);
+                    Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                    Console.WriteLine("No of Usable Hosts: " + (hosts-2));
+                    Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                    Console.WriteLine("No of subnets: " + subnetsNo);
                 }
                 else if (hosts == -1)
                 {
-                    Console.WriteLine("Hosts: No hosts available for addresses of class " + ipClass);
+                    Console.WriteLine("Hosts: No hosts available for this ip class");
+                    Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                    Console.WriteLine("No of Subnets: No subnets available for this ip class");
                 }
                 else
                 {
                     Console.WriteLine("Hosts: Error! Calculating hosts failed");
+                    Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                    Console.WriteLine("No of Subnets: Error! Calculating subnets failed");
                 }
 
 
@@ -218,6 +229,9 @@ namespace FinalProjectGF2
                             }
                             ipAddrBin = ipAddrBin.TrimEnd('.');
 
+                            //Is used later to calculate the amount of subnets
+                            int startingIndex = 0;
+
                             //Gets the class of the ip address
                             //Also, if the subnet mask isn't right for a given class, it will send back an error
                             if (subnetExists)
@@ -225,16 +239,19 @@ namespace FinalProjectGF2
                                 if (ipExplodedInt[0] >= 1 && ipExplodedInt[0] <= 127)
                                 {
                                     ipClass = 'A';
+                                    startingIndex = 1;
                                     if (subnetInt[0] < 255) { Start(); }
                                 }
                                 else if (ipExplodedInt[0] >= 128 && ipExplodedInt[0] <= 191)
                                 {
                                     ipClass = 'B';
+                                    startingIndex = 2;
                                     if (subnetInt[0] < 255 || subnetInt[1] < 255) { Start(); }
                                 }
                                 else if (ipExplodedInt[0] >= 192 && ipExplodedInt[0] <= 223)
                                 {
                                     ipClass = 'C';
+                                    startingIndex = 3;
                                     if (subnetInt[0] < 255 || subnetInt[1] < 255 || subnetInt[2] < 255) { Start(); }
                                 }
                                 else
@@ -245,6 +262,7 @@ namespace FinalProjectGF2
                             //Ip classes D and E should not have a subnet
                             else if (!subnetExists)
                             {
+                                startingIndex = -1;
                                 if (ipExplodedInt[0] >= 224 && ipExplodedInt[0] <= 239)
                                 {
                                     ipClass = 'D';
@@ -265,23 +283,30 @@ namespace FinalProjectGF2
 
                             //Network address (binary)
                             string[] binAddr = new string[4];
-                            int p = 0;
-                            foreach (string sec in ipBin)
+                            if (ipClass == 'D' || ipClass == 'E')
                             {
-                                int n = 0;
-                                foreach (char bit in sec)
+                                binAddr = ipBin;
+                            }
+                            else
+                            {
+                                int p = 0;
+                                foreach (string sec in ipBin)
                                 {
-                                    if (ipBin[p][n] == '1' && subnetBin[p][n] == '1')
+                                    int n = 0;
+                                    foreach (char bit in sec)
                                     {
-                                        binAddr[p] += ipBin[p][n];
+                                        if (ipBin[p][n] == '1' && subnetBin[p][n] == '1')
+                                        {
+                                            binAddr[p] += ipBin[p][n];
+                                        }
+                                        else
+                                        {
+                                            binAddr[p] += '0';
+                                        }
+                                        n++;
                                     }
-                                    else
-                                    {
-                                        binAddr[p] += '0';
-                                    }
-                                    n++;
+                                    p++;
                                 }
-                                p++;
                             }
                             //Output to the user
                             foreach (string sec in binAddr)
@@ -313,6 +338,25 @@ namespace FinalProjectGF2
                                 }
                                 //The actual equasion to getting the hosts --> h = 2^n
                                 hosts = Convert.ToInt32(Math.Pow(2, hostBits));
+                            }
+
+                            //Subnets
+                            if (ipClass == 'D' || ipClass == 'E')
+                            {
+                                hosts = -1;
+                            }
+                            else
+                            {
+                                int subnetBits = 0;
+
+                                for (int i = startingIndex; i < 4; i++)
+                                {
+                                    foreach (char bit in subnetBin[i])
+                                    {
+                                        if (bit == '1') { subnetBits++; }
+                                    }
+                                }
+                                subnetsNo = Convert.ToInt32(Math.Pow(2, subnetBits));
                             }
                         }
                     }
