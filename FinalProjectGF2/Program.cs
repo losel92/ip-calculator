@@ -341,6 +341,7 @@ namespace FinalProjectGF2
                             }
 
                             //Subnets
+                            //Also tests for a wrong subnet section value
                             if (ipClass == 'D' || ipClass == 'E')
                             {
                                 hosts = -1;
@@ -348,12 +349,25 @@ namespace FinalProjectGF2
                             else
                             {
                                 int subnetBits = 0;
+                                bool zeroFound = false;
 
                                 for (int i = startingIndex; i < 4; i++)
                                 {
                                     foreach (char bit in subnetBin[i])
                                     {
-                                        if (bit == '1') { subnetBits++; }
+
+                                        if(zeroFound == true)
+                                        {
+                                            if (bit == '1')
+                                            {
+                                                Start();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (bit == '1') { subnetBits++; }
+                                            else if (bit == '0') { zeroFound = true; }
+                                        }
                                     }
                                 }
                                 subnetsNo = Convert.ToInt32(Math.Pow(2, subnetBits));
