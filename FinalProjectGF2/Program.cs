@@ -15,7 +15,7 @@ namespace FinalProjectGF2
             Console.ForegroundColor = ConsoleColor.Green;
             Console.BackgroundColor = ConsoleColor.Black;
 
-            // 255.255.255.255 --> 11111111.11111111.11111111.11111111
+            //Initial global variables
             int[] intSec = new int[4];
             string[] inputExploded;
             string ipAddr = "";
@@ -24,6 +24,7 @@ namespace FinalProjectGF2
             string subMaskBin = "";
             string networkAddr = "";
             string networkAddrBin = "";
+            string errorMsg = "";
             int hosts = 0;
             int subnetsNo = 0;
             char ipClass;
@@ -45,6 +46,12 @@ namespace FinalProjectGF2
                 Console.Clear();
                 ResetVariables();
 
+                //Only if there was an error it will display the error message
+                if (errorMsg != "")
+                {
+                    Console.WriteLine(errorMsg + "\n");
+                    errorMsg = "";
+                }
                 Console.Write("Insert IP Address: ");
                 //Gets the Ip address to be manipulated
                 string userInput = Console.ReadLine();
@@ -100,6 +107,7 @@ namespace FinalProjectGF2
                     //This means that the user placed the slash in a wrong place or has an invalid ip address
                     if (userInput.IndexOf("/") < 7 || userInput.IndexOf("/") > 15)
                     {
+                        errorMsg = "Slash was placed in an invalid spot or the ip address might be invalid";
                         Start();
                     }
                     else
@@ -109,6 +117,7 @@ namespace FinalProjectGF2
                         //this means that the user used more than one slash
                         if (inputExploded.Length > 2)
                         {
+                            errorMsg = "Please use only one slash placed between the ip address and the subnet mask";
                             Start();
                         }
                         else
@@ -215,6 +224,7 @@ namespace FinalProjectGF2
                             //This means that the user entered no subnet
                             else
                             {
+                                errorMsg = "Please enter a subnet mask";
                                 Start();
                             }
 
@@ -240,22 +250,23 @@ namespace FinalProjectGF2
                                 {
                                     ipClass = 'A';
                                     startingIndex = 1;
-                                    if (subnetInt[0] < 255) { Start(); }
+                                    if (subnetInt[0] < 255) { errorMsg = "The default subnet mask for this class is 255.0.0.0"; Start(); }
                                 }
                                 else if (ipExplodedInt[0] >= 128 && ipExplodedInt[0] <= 191)
                                 {
                                     ipClass = 'B';
                                     startingIndex = 2;
-                                    if (subnetInt[0] < 255 || subnetInt[1] < 255) { Start(); }
+                                    if (subnetInt[0] < 255 || subnetInt[1] < 255) { errorMsg = "The default subnet mask for this class is 255.255.0.0"; Start(); }
                                 }
                                 else if (ipExplodedInt[0] >= 192 && ipExplodedInt[0] <= 223)
                                 {
                                     ipClass = 'C';
                                     startingIndex = 3;
-                                    if (subnetInt[0] < 255 || subnetInt[1] < 255 || subnetInt[2] < 255) { Start(); }
+                                    if (subnetInt[0] < 255 || subnetInt[1] < 255 || subnetInt[2] < 255) { errorMsg = "The default subnet mask for this class is 255.255.255.0"; Start(); }
                                 }
                                 else
                                 {
+                                    errorMsg = "Subnet mask error";
                                     Start();
                                 }
                             }
@@ -278,6 +289,7 @@ namespace FinalProjectGF2
                             }
                             else
                             {
+                                errorMsg = "Subnet mask error";
                                 Start();
                             }
 
@@ -360,6 +372,7 @@ namespace FinalProjectGF2
                                         {
                                             if (bit == '1')
                                             {
+                                                errorMsg = "Subnet mask values should be one of the following: 128, 224, 240, 248, 252, 254, 255. Anything other than that is classified as an invalid subnet mask";
                                                 Start();
                                             }
                                         }
@@ -382,9 +395,10 @@ namespace FinalProjectGF2
             {
                 int[] inputExplodedInt = new int[4];
 
-                //This means the user hasn't punctuated the Ip address correctly
+                //This means the user hasn't punctuated the address correctly
                 if (inputArr.Length > 4 || inputArr.Length < 4)
                 {
+                    errorMsg = "Puctuation error; Make sure to puctuate the ip address/subnet mask correctly";
                     Start();
                 }
                 else
@@ -397,6 +411,7 @@ namespace FinalProjectGF2
                         int i;
                         if (!int.TryParse(sec, out i) || i > 255 || i < 0)
                         {
+                            errorMsg = "Not a number or invalid range of numbers; Make sure each section of the ip address/subnet mask is a number between 0 - 255";
                             Start();
                         }
                         else
