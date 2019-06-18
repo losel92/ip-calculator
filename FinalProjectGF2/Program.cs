@@ -52,7 +52,7 @@ namespace FinalProjectGF2
                     Console.WriteLine(errorMsg + "\n");
                     errorMsg = "";
                 }
-                Console.Write("Insert IP Address: ");
+                Console.Write("Insert Ip Address: ");
                 //Gets the Ip address to be manipulated
                 string userInput = Console.ReadLine();
 
@@ -64,17 +64,17 @@ namespace FinalProjectGF2
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 Console.WriteLine("Ip Address (Decimal): " + ipAddr);
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
-                Console.WriteLine("Ip Address (Binary): " + ipAddrBin);
-                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 Console.WriteLine("Subnet Mask (Decimal): " + subMaskStr);
-                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
-                Console.WriteLine("Subnet Mask (Binary): " + subMaskBin);
-                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
-                Console.WriteLine("Class: " + ipClass);
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 Console.WriteLine("Network Address (Decimal): " + networkAddr);
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                Console.WriteLine("Ip Address (Binary): " + ipAddrBin);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                Console.WriteLine("Subnet Mask (Binary): " + subMaskBin);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 Console.WriteLine("Network Address (Binary): " + networkAddrBin);
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                Console.WriteLine("Class: " + ipClass);
                 Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
                 if (hosts > 0)
                 {
@@ -97,6 +97,8 @@ namespace FinalProjectGF2
                     Console.WriteLine("No of Subnets: Error! Calculating subnets failed");
                 }
 
+                Console.SetCursorPosition(Console.CursorLeft + 10, Console.CursorTop + 1);
+                Console.Write("Press any key to continue...");
 
                 Console.ReadKey();
                 Start();
